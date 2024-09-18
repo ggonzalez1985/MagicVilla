@@ -1,0 +1,29 @@
+# Build Folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.vspscc
+*.vssscc
+
+# Visual Studio generated files
+.vscode/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Dependency directories
+packages/
+node_modules/
+
+# Logs and database
+*.log
+*.ldf
+*.mdf
+
+# Resharper and Rider files
+_ReSharper*/
+*.sln.cache
