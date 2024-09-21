@@ -73,5 +73,9 @@ namespace MagicVilla_API.Controllers
             return NoContent();    
 
         }
+
+        [HttpPut]
+
+
     }
 }
