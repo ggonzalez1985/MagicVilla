@@ -74,8 +74,9 @@ namespace MagicVilla_API.Controllers
 
         }
 
-        [HttpPut]
-
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
     }
 }
