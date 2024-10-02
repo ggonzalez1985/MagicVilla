@@ -49,7 +49,7 @@ namespace MagicVilla_API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<VillaDto> CrearVilla([FromBody] VillaDto villaDto)
+        public ActionResult<VillaDto> CrearVilla([FromBody] VillaCreateDto villaDto)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -62,9 +62,6 @@ namespace MagicVilla_API.Controllers
 
             if (villaDto == null)
                 return BadRequest();
-
-            if(villaDto.Id > 0)
-                return StatusCode(StatusCodes.Status500InternalServerError);
 
             Villa modelo = new()
             {
@@ -82,7 +79,13 @@ namespace MagicVilla_API.Controllers
             _db.Villas.Add(modelo);
             _db.SaveChanges();
 
-            return CreatedAtRoute("GetVilla", modelo);
+            //crea un objeto anónimo con una propiedad llamada id cuyo valor es el Id del objeto modelo.
+            //CreatedAtRoute es que no solo indica que el recurso fue creado, sino que además devuelve la URL donde se puede acceder al recurso recién creado.
+            //CreatedAtRoute: confirmación de creación
+            //CreatedAtRoute es la mejor práctica cuando estás manejando la creación de un nuevo recurso en una API REST
+            //Devuelve el estado correcto: 201 (Created).
+            //Proporciona la URL del nuevo recurso al cliente.
+            return CreatedAtRoute("GetVilla", new {id= modelo.Id}, modelo);
         }
 
         [HttpDelete]
@@ -96,12 +99,9 @@ namespace MagicVilla_API.Controllers
 
             var villa = _db.Villas.FirstOrDefault(v => v.Id == id);
 
-            //VillaStore.villaList.FirstOrDefault( v => v.Id == id);
-
             if (villa == null)
                 return NotFound();
 
-            //VillaStore.villaList.Remove(villa);
             _db.Villas.Remove(villa);
             _db.SaveChanges();
 
@@ -112,7 +112,7 @@ namespace MagicVilla_API.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateVilla(int id, [FromBody] VillaDto villaDto)
+        public IActionResult UpdateVilla(int id, [FromBody] VillaUpdateDto villaDto)
         {
             if(villaDto == null || villaDto.Id != id)
                 return BadRequest();
@@ -129,7 +129,7 @@ namespace MagicVilla_API.Controllers
                 MetrosCuadrados = villaDto.MetrosCuadrados,
                 ImagenUrl = villaDto.ImagenUrl,
                 Amenidad = villaDto.Amenidad,
-                //FechaActualizacion = DateTime.Now
+                FechaActualizacion = DateTime.Now
             };
 
             _db.Update(modelo);
@@ -141,14 +141,14 @@ namespace MagicVilla_API.Controllers
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaDto> patchDto)
+        public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDto> patchDto)
         {
             if (patchDto == null || id == 0)
                 return BadRequest();
 
             var villa = _db.Villas.AsNoTracking().FirstOrDefault(v => v.Id == id);
 
-            VillaDto villaDto = new()
+            VillaUpdateDto villaDto = new()
             {
                 Id = villa.Id,
                 Nombre = villa.Nombre,
