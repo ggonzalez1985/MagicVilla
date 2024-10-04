@@ -13,6 +13,6 @@ namespace MagicVilla_API.Datos
 
         //en la BD el te crea esta tabla que especificas aca.
         public DbSet<Villa> Villas { get; set; }
-
+        public DbSet<NumeroVilla> NumeroVillas { get; set; }
     }
 }
