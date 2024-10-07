@@ -20,6 +20,10 @@ namespace MagicVilla_Web.Services
 
         public async Task<T> SendAsync<T>(APIRequest apiRequest)
         {
+            //Este servicio es genérico y se encarga de manejar las solicitudes HTTP (GET, POST, PUT, DELETE) de manera centralizada.
+            //BaseService proporciona la funcionalidad genérica de enviar solicitudes HTTP, mientras que
+            //BaseService se enfoca en la parte técnica de las solicitude
+
             try
             {
                 var client = _httpClient.CreateClient("MagicAPI");
