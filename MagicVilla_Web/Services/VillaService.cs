@@ -53,7 +53,7 @@ namespace MagicVilla_Web.Services
         {
             return SendAsync<T>(new APIRequest()
             {
-                APITipo = DS.APITipo.PUT,
+                APITipo = DS.APITipo.GET,
                 Url = _villaUrl + "/api/Villa"
             });
         }
