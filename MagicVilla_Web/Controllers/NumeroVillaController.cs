@@ -31,6 +31,16 @@ namespace MagicVilla_Web.Controllers
 
 			return View(numeroVillaList);
 		}
+
+		public async Task<IActionResult> CrearNumeroVilla()
+		{
+			return View();
+		}
+
+		//crea 1 ViewModel para pasarle los datos de las villas disponibles.
+		//ViewModel encapsula varios modelos en 1 sola clase.
+
+
        
 	}
 }
