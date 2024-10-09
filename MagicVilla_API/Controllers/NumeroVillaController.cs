@@ -40,7 +40,7 @@ namespace MagicVilla_API.Controllers
 
             try
             {
-                IEnumerable<NumeroVilla> numerovillalist = await _numeroRepo.ObtenerTodos();
+                IEnumerable<NumeroVilla> numerovillalist = await _numeroRepo.ObtenerTodos(incluirPropiedades:"Villa");//de esta manera trae los datos de 'Villa'
 
                 //Esto toma la lista de objetos Villa (villalist) y la convierte a una colección de VillaDto
                 _response.Resultado = _mapper.Map<IEnumerable<NumeroVillaDto>>(numerovillalist);
@@ -71,7 +71,7 @@ namespace MagicVilla_API.Controllers
                     return BadRequest(_response);
                 }
 
-                var numeroVilla = await _numeroRepo.Obtener(V => V.VillaNo == id);
+                var numeroVilla = await _numeroRepo.Obtener(V => V.VillaNo == id, incluirPropiedades: "Villa");
 
                 if (numeroVilla == null)
                 {

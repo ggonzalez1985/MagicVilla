@@ -11,5 +11,7 @@ namespace MagicVilla_API.Modelos.Dto
 
         public string DetalleEspecial { get; set; }
 
+        public VillaDto villa { get; set; }
+
     }
 }

@@ -11,5 +11,7 @@ namespace MagicVilla_Web.Models.Dto
 
         public string DetalleEspecial { get; set; }
 
+        public VillaDto Villa { get; set; } //de esta forma navegas a la tabla "Villa"
+
     }
 }

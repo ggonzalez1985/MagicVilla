@@ -28,7 +28,7 @@ namespace MagicVilla_API.Repositorio
             await _db.SaveChangesAsync();
         }
 
-        public async Task<T> Obtener(Expression<Func<T, bool>> filtro = null, bool tracked = true)
+        public async Task<T> Obtener(Expression<Func<T, bool>> filtro = null, bool tracked = true, string? incluirPropiedades = null)
         {
             IQueryable<T> query = dbSet; // Inicia la consulta con el conjunto de entidades
 
@@ -38,15 +38,31 @@ namespace MagicVilla_API.Repositorio
             if(filtro != null)
                 query = query.Where(filtro); // Aplica un filtro, si se proporciona
 
+            if (incluirPropiedades != null)
+            {
+                foreach(var incluirProp in incluirPropiedades.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(incluirProp);
+                }
+            }
+
             return await query.FirstOrDefaultAsync(); // Devuelve la primera entidad que cumple con el filtro
         }
 
-        public async Task<List<T>> ObtenerTodos(Expression<Func<T, bool>>? filtro = null)
+        public async Task<List<T>> ObtenerTodos(Expression<Func<T, bool>>? filtro = null, string? incluirPropiedades = null)
         {
             IQueryable<T> query = dbSet;
 
             if (filtro != null)
                 query = query.Where(filtro);
+
+            if (incluirPropiedades != null)
+            {
+                foreach (var incluirProp in incluirPropiedades.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(incluirProp);
+                }
+            }
 
             return await query.ToListAsync(); //Utilizas IQueryable<Villa> para construir una consulta
         }
