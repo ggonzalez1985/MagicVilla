@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Execution;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -92,6 +93,68 @@ namespace MagicVilla_Web.Controllers
 			}
 			return View(modelo);
 		}
+
+		public async Task<IActionResult> ActualizarNumeroVilla(int villaNo)
+		{
+			NumeroVillaUpdateViewModel numeroVillaVM = new();
+
+			var response = await _numeroVillaService.Obtener<APIResponse>(villaNo);
+
+			if (response != null && response.IsExitoso)
+			{
+				NumeroVillaDto modelo = JsonConvert.DeserializeObject<NumeroVillaDto>(Convert.ToString(response.Resultado));
+				numeroVillaVM.NumeroVilla = _mapper.Map<NumeroVillaUpdateDto>(modelo);
+			}
+
+			response = await _villaService.ObtenerTodos<APIResponse>();
+
+			if (response != null && response.IsExitoso) //en el caso de que algo falle, te carga de nuevo la lista de villas.
+			{
+				numeroVillaVM.VillaList = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(response.Resultado))
+											.Select(v => new SelectListItem
+											{
+												Text = v.Nombre,
+												Value = v.Id.ToString(),
+											}); //de esta forma llenas la lista de villa lista
+				return View(numeroVillaVM);
+			}
+
+			return NotFound();
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ActualizarNumeroVilla(NumeroVillaUpdateViewModel modelo)
+		{
+            if (ModelState.IsValid)
+            {
+                var response = await _numeroVillaService.Actualizar<APIResponse>(modelo.NumeroVilla);
+                if (response != null && response.IsExitoso)
+                {
+                    return RedirectToAction(nameof(IndexNumeroVilla));
+                }
+                else
+                {
+                    if (response.ErrorMessages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                    }
+                }
+            }
+
+            var res = await _villaService.ObtenerTodos<APIResponse>();
+
+            if (res != null && res.IsExitoso) //en el caso de que algo falle, te carga de nuevo la lista de villas.
+            {
+                modelo.VillaList = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(res.Resultado))
+                                            .Select(v => new SelectListItem
+                                            {
+                                                Text = v.Nombre,
+                                                Value = v.Id.ToString(),
+                                            }); //de esta forma llenas la lista de villa lista
+            }
+            return View(modelo);
+        }
 
 	}
 }
