@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MagicVilla_API.Modelos;
+using MagicVilla_Utilidad;
 using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace MagicVilla_Web.Controllers
 		{
 			List<VillaDto> villaList = new();
 
-			var response = await _villaService.ObtenerTodos<APIResponse>(); //APIResponse es la clase que nos retorna los elementos                                                                 de APIResponse 
+			var response = await _villaService.ObtenerTodos<APIResponse>(HttpContext.Session.GetString(DS.SessionToken)); //APIResponse es la clase que nos retorna los elementos                                                                 de APIResponse 
 
 			if (response != null && response.IsExitoso)
 			{
@@ -43,7 +44,7 @@ namespace MagicVilla_Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var response = await _villaService.Crear<APIResponse>(modelo);
+				var response = await _villaService.Crear<APIResponse>(modelo, HttpContext.Session.GetString(DS.SessionToken));
 
 				if (response != null && response.IsExitoso)
 				{
@@ -57,7 +58,7 @@ namespace MagicVilla_Web.Controllers
 		//Este método se utiliza para mostrar la vista de actualización de una villa específica.
 		public async Task<IActionResult> ActualizarVilla(int villaId)
 		{
-			var response = await _villaService.Obtener<APIResponse>(villaId);
+			var response = await _villaService.Obtener<APIResponse>(villaId, HttpContext.Session.GetString(DS.SessionToken));
 
 			if (response != null && response.IsExitoso)
 			{
@@ -74,7 +75,7 @@ namespace MagicVilla_Web.Controllers
 		 //Su función es procesar la actualización de la villa.
 			if (ModelState.IsValid)
 			{
-				var response = await _villaService.Actualizar<APIResponse>(modelo);
+				var response = await _villaService.Actualizar<APIResponse>(modelo, HttpContext.Session.GetString(DS.SessionToken));
 
 				if (response != null && response.IsExitoso)
 				{
@@ -88,7 +89,7 @@ namespace MagicVilla_Web.Controllers
 
 		public async Task<IActionResult> RemoverVilla(int villaId)
 		{
-			var response = await _villaService.Obtener<APIResponse>(villaId);
+			var response = await _villaService.Obtener<APIResponse>(villaId, HttpContext.Session.GetString(DS.SessionToken));
 
 			if (response != null && response.IsExitoso)
 			{
@@ -103,7 +104,7 @@ namespace MagicVilla_Web.Controllers
 		public async Task<IActionResult> RemoverVilla(VillaDto modelo)
 		{//Este método es llamado cuando el usuario ha enviado el formulario con los datos modificados de la villa.
 		 //Su función es procesar la actualización de la villa.
-			var response = await _villaService.Remover<APIResponse>(modelo.Id);
+			var response = await _villaService.Remover<APIResponse>(modelo.Id, HttpContext.Session.GetString(DS.SessionToken));
 
 			if (response != null && response.IsExitoso)
 			{
