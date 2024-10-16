@@ -13,10 +13,11 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Net;
 
-namespace MagicVilla_API.Controllers
+namespace MagicVilla_API.Controllers.v1
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class NumeroVillaController : ControllerBase
     {
         private readonly IVillaRepositorio _villaRepo;
@@ -32,8 +33,9 @@ namespace MagicVilla_API.Controllers
             _response = new();
         }
 
-//Con métodos asíncronos, el servidor puede gestionar las 100 solicitudes al mismo tiempo, ya que mientras espera las respuestas de la base de datos, sigue atendiendo nuevas solicitudes.
+        //Con métodos asíncronos, el servidor puede gestionar las 100 solicitudes al mismo tiempo, ya que mientras espera las respuestas de la base de datos, sigue atendiendo nuevas solicitudes.
         //Esto mejora la escalabilidad porque permite manejar más usuarios sin necesitar más recursos.
+
         [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -42,7 +44,7 @@ namespace MagicVilla_API.Controllers
 
             try
             {
-                IEnumerable<NumeroVilla> numerovillalist = await _numeroRepo.ObtenerTodos(incluirPropiedades:"Villa");//de esta manera trae los datos de 'Villa'
+                IEnumerable<NumeroVilla> numerovillalist = await _numeroRepo.ObtenerTodos(incluirPropiedades: "Villa");//de esta manera trae los datos de 'Villa'
 
                 //Esto toma la lista de objetos Villa (villalist) y la convierte a una colección de VillaDto
                 _response.Resultado = _mapper.Map<IEnumerable<NumeroVillaDto>>(numerovillalist);
@@ -98,8 +100,8 @@ namespace MagicVilla_API.Controllers
         }
 
         [HttpPost]
-		[Authorize(Roles = "admin")]
-		[ProducesResponseType(StatusCodes.Status201Created)]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CrearNumeroVilla([FromBody] NumeroVillaCreateDto createDto)
@@ -117,7 +119,7 @@ namespace MagicVilla_API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (await _villaRepo.Obtener(v=>v.Id == createDto.VillaId) == null)
+                if (await _villaRepo.Obtener(v => v.Id == createDto.VillaId) == null)
                 {
                     ModelState.AddModelError("ErrorMessages", "El Id de Villa no existe!");
                     return BadRequest(ModelState);
@@ -153,8 +155,8 @@ namespace MagicVilla_API.Controllers
         }
 
         [HttpDelete("{id:int}")]
-		[Authorize(Roles = "admin")]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteNumeroVilla(int id)
@@ -191,8 +193,8 @@ namespace MagicVilla_API.Controllers
         }
 
         [HttpPut("{id:int}")]
-		[Authorize(Roles = "admin")]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateNumeroVilla(int id, [FromBody] NumeroVillaUpdateDto updateDto)
         {
@@ -205,7 +207,7 @@ namespace MagicVilla_API.Controllers
                     return BadRequest(_response);
                 }
 
-                if (await _villaRepo.Obtener(v=>v.Id == updateDto.VillaId) == null)
+                if (await _villaRepo.Obtener(v => v.Id == updateDto.VillaId) == null)
                 {
                     ModelState.AddModelError("ErrorMessages", "El ID de la Villa no existe");
                     return BadRequest(ModelState);

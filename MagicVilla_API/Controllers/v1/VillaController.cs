@@ -13,10 +13,11 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Net;
 
-namespace MagicVilla_API.Controllers
+namespace MagicVilla_API.Controllers.v1
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class VillaController : ControllerBase
     {
         private readonly IVillaRepositorio _villaRepo;
@@ -95,7 +96,7 @@ namespace MagicVilla_API.Controllers
         }
 
         [HttpPost]
-        [Authorize (Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -144,8 +145,8 @@ namespace MagicVilla_API.Controllers
         }
 
         [HttpDelete("{id:int}")]
-		[Authorize(Roles = "admin")]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteVilla(int id)
@@ -181,8 +182,8 @@ namespace MagicVilla_API.Controllers
         }
 
         [HttpPut("{id:int}")]
-		[Authorize(Roles = "admin")]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDto updateDto)
         {
@@ -211,8 +212,8 @@ namespace MagicVilla_API.Controllers
         }
 
         [HttpPatch("{id:int}")]
-		[Authorize(Roles = "admin")]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDto> patchDto)
         {//IActionResult y ActionResult son dos tipos comunes utilizados en ASP.NET Core para definir los resultados de las acciones de un controlador
