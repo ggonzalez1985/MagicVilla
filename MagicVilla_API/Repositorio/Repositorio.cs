@@ -1,4 +1,5 @@
 ﻿using MagicVilla_API.Datos;
+using MagicVilla_API.Modelos.Especificaciones;
 using MagicVilla_API.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -67,7 +68,25 @@ namespace MagicVilla_API.Repositorio
             return await query.ToListAsync(); //Utilizas IQueryable<Villa> para construir una consulta
         }
 
-        public async Task Remove(T entidad)
+		public PagedList<T> ObtenerTodosPaginados(Parametros parametros, Expression<Func<T, bool>>? filtro = null, string? incluirPropiedades = null)
+		{
+			IQueryable<T> query = dbSet;
+
+			if (filtro != null)
+				query = query.Where(filtro);
+
+			if (incluirPropiedades != null)
+			{
+				foreach (var incluirProp in incluirPropiedades.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					query = query.Include(incluirProp);
+				}
+			}
+
+            return PagedList<T>.ToPagedList(query, parametros.PageNumber, parametros.PageSize);
+		}
+
+		public async Task Remove(T entidad)
         {
             dbSet.Remove(entidad);
             await Grabar();

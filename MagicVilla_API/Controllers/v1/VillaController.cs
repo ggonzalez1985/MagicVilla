@@ -2,6 +2,7 @@
 using MagicVilla_API.Datos;
 using MagicVilla_API.Modelos;
 using MagicVilla_API.Modelos.Dto;
+using MagicVilla_API.Modelos.Especificaciones;
 using MagicVilla_API.Repositorio;
 using MagicVilla_API.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,7 @@ namespace MagicVilla_API.Controllers.v1
         //Con métodos asíncronos, el servidor puede gestionar las 100 solicitudes al mismo tiempo, ya que mientras espera las respuestas de la base de datos, sigue atendiendo nuevas solicitudes.
         //Esto mejora la escalabilidad porque permite manejar más usuarios sin necesitar más recursos.
         [HttpGet]
+        [ResponseCache(CacheProfileName = "Default30")] //llamo al perfil donde esta definido eso. 'Program.cs'
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas()
@@ -56,7 +58,33 @@ namespace MagicVilla_API.Controllers.v1
             return _response;
         }
 
-        [HttpGet("{id:int}", Name = "GetVilla")]
+		[HttpGet("VillasPaginado")]
+        [ResponseCache(CacheProfileName = "Default30")] //llamo al perfil donde esta definido eso. 'Program.cs'
+		[Authorize]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<ActionResult<APIResponse>> GetVillasPaginado([FromQuery] Parametros parametros)
+		{
+
+			try
+			{
+                var villaList = _villaRepo.ObtenerTodosPaginado(parametros);
+
+				//Esto toma la lista de objetos Villa (villalist) y la convierte a una colección de VillaDto
+				_response.Resultado = _mapper.Map<IEnumerable<VillaDto>>(villaList);
+				_response.statusCode = HttpStatusCode.OK;
+                _response.TotalPaginas = villaList.MetaData.TotalPages;
+
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.IsExitoso = false;
+				_response.ErrorMessages = new List<string>() { ex.ToString() };
+			}
+			return _response;
+		}
+
+		[HttpGet("{id:int}", Name = "GetVilla")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
