@@ -3,6 +3,7 @@ using MagicVilla_API.Modelos;
 using MagicVilla_Utilidad;
 using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -19,7 +20,8 @@ namespace MagicVilla_Web.Controllers
 			_villaService = villaServices; //de esta manera ya estan inyectados los servicios y los podemos utilizar.
 		}
 
-		public async Task<IActionResult> IndexVilla() //cada metodo que vamos a crear esta relacionado con una vista.
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> IndexVilla() //cada metodo que vamos a crear esta relacionado con una vista.
 		{
 			List<VillaDto> villaList = new();
 
@@ -33,7 +35,8 @@ namespace MagicVilla_Web.Controllers
 			return View(villaList);
 		}
 
-		public async Task<IActionResult> CrearVilla() //llama a la vista
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> CrearVilla() //llama a la vista
 		{
 			return View();
 		}
@@ -54,9 +57,10 @@ namespace MagicVilla_Web.Controllers
 			}
 			return View(modelo);
 		}
-
 		//Este método se utiliza para mostrar la vista de actualización de una villa específica.
-		public async Task<IActionResult> ActualizarVilla(int villaId)
+
+		[Authorize(Roles = "admin")]
+        public async Task<IActionResult> ActualizarVilla(int villaId)
 		{
 			var response = await _villaService.Obtener<APIResponse>(villaId, HttpContext.Session.GetString(DS.SessionToken));
 
@@ -86,8 +90,8 @@ namespace MagicVilla_Web.Controllers
 			return View(modelo);
 		}
 
-
-		public async Task<IActionResult> RemoverVilla(int villaId)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> RemoverVilla(int villaId)
 		{
 			var response = await _villaService.Obtener<APIResponse>(villaId, HttpContext.Session.GetString(DS.SessionToken));
 

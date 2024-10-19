@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.ComponentModel.Design;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -37,11 +38,14 @@ namespace MagicVilla_Web.Controllers
 			{
 				LoginResponseDto loginResponse = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(response.Resultado));
 
+				var handler = new JwtSecurityTokenHandler();
+				var jwt = handler.ReadJwtToken(loginResponse.Token);
+
 				//Claims - para guardar el USERNAME y el ROL - antes agregar los SERVICIOS + pipline de AUTENTICACION
 				var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-				identity.AddClaim(new Claim(ClaimTypes.Name, loginResponse.Usuario.UserName));
-				identity.AddClaim(new Claim(ClaimTypes.Role, loginResponse.Usuario.Rol));
-				var principal = new ClaimsPrincipal(identity);
+				identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(c=>c.Type=="unique_name").Value));
+				identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(c => c.Type == "role").Value));
+                var principal = new ClaimsPrincipal(identity);
 				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
 				//Session
