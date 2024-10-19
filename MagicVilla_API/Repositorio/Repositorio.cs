@@ -68,7 +68,7 @@ namespace MagicVilla_API.Repositorio
             return await query.ToListAsync(); //Utilizas IQueryable<Villa> para construir una consulta
         }
 
-		public PagedList<T> ObtenerTodosPaginados(Parametros parametros, Expression<Func<T, bool>>? filtro = null, string? incluirPropiedades = null)
+		public PagedList<T> ObtenerTodosPaginado(Parametros parametros, Expression<Func<T, bool>>? filtro = null, string? incluirPropiedades = null)
 		{
 			IQueryable<T> query = dbSet;
 

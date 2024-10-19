@@ -60,7 +60,6 @@ namespace MagicVilla_API.Controllers.v1
 
 		[HttpGet("VillasPaginado")]
         [ResponseCache(CacheProfileName = "Default30")] //llamo al perfil donde esta definido eso. 'Program.cs'
-		[Authorize]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public async Task<ActionResult<APIResponse>> GetVillasPaginado([FromQuery] Parametros parametros)
 		{
