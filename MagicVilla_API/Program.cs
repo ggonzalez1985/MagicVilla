@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using MagicVilla_API.Modelos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,6 +109,9 @@ builder.Services.AddDbContext<AplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddIdentity<UsuarioAplicacion, IdentityRole>()
+				.AddEntityFrameworkStores<AplicationDbContext>();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
