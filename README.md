@@ -159,6 +159,7 @@ cd magicvilla-api</code></pre>
 <p>Para preguntas o comentarios, puedes contactarme en:</p>
 
 <ul>
-    <li><strong>LinkedIn</strong>: <a href="https://www.linkedin.com/in/gabriel-m-gonzalez" target="_blank">Gabriel M. González</a></li>
-    <li><strong>GitHub</strong>: <a href="https://github.com/tu-usuario" target="_blank">https://github.com/tu-usuario</a></li>
+    <li><strong>LinkedIn</strong>: <a href="https://www.linkedin.com/in/ggonzalez1985/" target="_blank">https://www.linkedin.com/in/ggonzalez1985/</a></li>
+    <li><strong>GitHub</strong>: <a href="https://github.com/ggonzalez1985/" target="_blank">https://github.com/ggonzalez1985/</a></li>
 </ul>
+
